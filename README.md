@@ -1,0 +1,3 @@
+# scripts-config
+
+Just some configs I'll hate to lose...
