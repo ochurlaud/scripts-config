@@ -16,4 +16,6 @@ runtime! archlinux.vim
 
 syntax on
 filetype plugin indent on
-
+set background=dark
+set expandtab
+set tabstop=4
