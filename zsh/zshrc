@@ -230,13 +230,14 @@ zstyle ':vcs_info:*:prompt:*' actionformats  " ${PR_GREEN}%s${PR_RESET}:${PR_BRI
 zstyle ':vcs_info:*:prompt:*' nvcsformats   ""                             "%~"
 zstyle ':vcs_info:*:prompt:*' branchformat  "%b:%r"              ""
 
-BLUE_DIAMOND="%B%F{blue}?%f%b"
-YELLOW_DIAMOND="%B%F{yellow}?%f%b"
-GREEN_DIAMOND="%B%F{green}?%f%b"
-RED_DIAMOND="%B%F{red}?%f%b"
-RED_RARROW="%B%F{red}?%f%b"
-RED_LARROW="%B%F{red}?%f%b"
-RED_STAR="%B%F{red}?%b%f"
+
+BLUE_DIAMOND="%B%F{blue}◆%f%b"
+YELLOW_DIAMOND="%B%F{yellow}◆%f%b"
+GREEN_DIAMOND="%B%F{green}◆%f%b"
+RED_DIAMOND="%B%F{red}◆%f%b"
+RED_RARROW="%B%F{red}▶%f%b"
+RED_LARROW="%B%F{red}◀%f%b"
+RED_STAR="%B%F{red}✱%b%f"
 
 case $TERM in
     *xterm*|rxvt|(dt|k|E)term)
@@ -289,33 +290,21 @@ if [[ -n $SSH_CONNECTION ]]; then
     else
         SSH_HOST=$SSH_IP
     fi    
-    SSH_PROMPT="${RED_STAR} %F{yellow}SSH from: %f%B%F{green}$SSH_HOST%f%b ${RED_STAR}"
+    SSH_PROMPT="${RED_DIAMOND} %F{yellow}SSH from: %f%B%F{green}$SSH_HOST%f%b ${RED_DIAMOND}"
     #SSH_PROMPT="${YELLOW_DIAMOND}${PR_BRIGHT_RED}SSH${PR_RESET}${YELLOW_DIAMOND}"
     #SSH_VAR="${YELLOW_DIAMOND}${PR_BRIGHT_RED}SSH${PR_RESET}${YELLOW_DIAMOND}"
 
 fi
-
-HASH_NUM=$(echo $HOSTNAME | md5sum | tr -d 'a-f' | cut -b 5-11)
-# COMMAND_TO_SEND="echo \"$(echo $HOSTNAME | md5sum)\""
-# for N in {0..5};
-#   do COMMAND_TO_SEND=$COMMAND_TO_SEND" | tr $(printf "\x$(printf %x 97+$N)")  $(printf "\x$(printf %x 49+$N)")" 
-# done;   
- 
-# echo $COMMAND_TO_SEND
-# HASH_NUM=$(eval $COMMAND_TO_SEND"|tr -d -")
-# echo $HASH_NUM
-
 
 # %F (%f) start (stop) color 
 # %B (%b) start (stop) boldness
 # %n username
 # %m short hostname
 
-HASH_MOD=$(($HASH_NUM % 6 + 2)) 
 if [[ $(whoami) = root ]]; then
     PROMPT_LINE="%B%F{red}%n@%M%f%b"
 else
-    PROMPT_LINE="%F{green}%n%f@%B%F{$HASH_MOD}%m%b%f"
+    PROMPT_LINE="%F{green}%n%f@%B%F{green}%m%b%f"
 fi
 
 precmd(){
@@ -323,29 +312,6 @@ precmd(){
     local exit_status=$?
 
     vcs_info 'prompt'
-
-    # Battery Stuff
-    if which ibam &> /dev/null; then
-        IBAMSTAT="$(ibam)"
-        if [[ ${IBAMSTAT[(f)(1)][(w)1]} =  "Battery" ]]; then
-            BATTSTATE="$(ibam --percentbattery)"
-            BATTPRCNT="${BATTSTATE[(f)1][(w)-2]}"
-            BATTTIME="${BATTSTATE[(f)2][(w)-1]}"
-            PR_BATTERY="Bat: ${BATTPRCNT}%% (${BATTTIME})"
-            if [[ "${BATTPRCNT}" -lt 15 ]]; then
-                PR_BATTERY=" ${BLUE_DIAMOND} ${PR_BRIGHT_RED}${PR_BATTERY}"
-            elif [[ "${BATTPRCNT}" -lt 50 ]]; then
-                PR_BATTERY=" ${BLUE_DIAMOND} ${PR_BRIGHT_YELLOW}${PR_BATTERY}"
-            elif [[ "${BATTPRCNT}" -lt 100 ]]; then
-                PR_BATTERY=" ${BLUE_DIAMOND} ${PR_BRIGHT_CYAN}${PR_BATTERY}${PR_RESET}"
-            else
-                PR_BATTERY=""
-            fi
-        else
-            PR_BATTERY=""
-        fi
-    fi
-    ###End of Battery Stuff######
 
     # now lets change the color of the path if its not writable
     if [[ -w $PWD ]]; then
@@ -355,31 +321,18 @@ precmd(){
     fi  
 
 
-#PROMPT LINE
-#${PR_BRIGHT_YELLOW}%D{%R.%S %a %b %d %Y}${PR_RESET}\
-# LINE1_PROMPT="\
-# %B%F{black}?%f%b%F{red}?%B%F{red}?%f%b \
-# %B%F{$HASH_MOD}%D{%R.%S %a %b %d %Y}%b%f\
-# ${EXIT_STATUS}\
-# %(1j. %B%F{green}?%f%b %B%F{yellow}Jobs: %j%f%b.)\
-# ${PR_BATTERY}\
-#  %B%F{red}?%f%b%F{red}?%B%F{black}?%f%b"
-###################
-
 LINE1_PROMPT="\
 ${EXIT_STATUS}\
-%(1j. %B%F{green}?%f%b %B%F{yellow}Jobs: %j%f%b.)\
-${PR_BATTERY}"
+%(1j. %B%F{green}?%f%b %B%F{yellow}Jobs: %j%f%b.)"
  
 local TERMWIDTH
 (( TERMWIDTH = ${COLUMNS} - 2 ))
 LINE1=${(e%)LINE1_PROMPT} SSH_P=${(e%)SSH_PROMPT}
-#$LINE1
 LINE1_LENGTH=${#${LINE1//\[[^m]##m/}}
 SSH_P_LENGTH=${#${SSH_P//\[[^m]##m/}}
 FILL_SPACES=${(l:TERMWIDTH - (LINE1_LENGTH + SSH_P_LENGTH):: :)}
 
-if [[ $LINE1 != "" ]]; then
+if [ \( $LINE1_LENGTH -ne 0 \) -o  \( $SSH_P_LENGTH -ne 0 \) ]; then
     print -- "$LINE1 $FILL_SPACES $SSH_P"
 fi;
 }
