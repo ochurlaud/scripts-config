@@ -26,6 +26,9 @@ syntax on
 filetype plugin indent on
 colorscheme desert
 
+autocmd ColorScheme * highlight PmenuSel ctermfg=black ctermbg=white
+autocmd ColorScheme * highlight PMenu ctermfg=white ctermbg=darkgray
+
 set background=dark
 
 set expandtab
