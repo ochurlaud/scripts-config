@@ -19,15 +19,19 @@ WORDCHARS="${WORDCHARS:s#/#}"
 WORDCHARS="${WORDCHARS:s#.#}"
 
 export LANG=en_US.UTF-8
-export LC_TIME=en_US.UTF-8 
+export LC_TIME=en_DK.UTF-8 
 
 ttyctl -f
 export EDITOR="vim"
+export VISUAL="vim"
 alias vi="vim"
 alias sudo="sudo "
 alias php="sudo -u http -H php"
 alias open="xdg-open"
 alias hist="history 0"
+
+films() { grep -i "$1" "$HOME/Videos_tmp/Balourd" }
+
 ##############################################################
 #key binding stuff to get the right keys to work
 bindkey -e
@@ -127,7 +131,7 @@ zstyle ':completion:*:kill:*'   force-list always
 zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
 
 CDPATH=.:~:~/git
-PATH=$PATH:~/bin
+PATH=$PATH:~/.local/bin
 
 #I want my umask 0002 if I'm not root
 if [[ $(whoami) = root ]]; then
