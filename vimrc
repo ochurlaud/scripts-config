@@ -34,3 +34,9 @@ set expandtab
 set shiftwidth=4
 set softtabstop=4
 set tabstop=8
+
+"let g:jedi#auto_initialization = 0
+"let g:jedi#popup_on_dot = 0
+autocmd FileType python setlocal completeopt-=preview
+
+set mouse-=a
