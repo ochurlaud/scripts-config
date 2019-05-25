@@ -1,0 +1,2 @@
+To enable a site, symlink from site-available to this folder.
+Be sure that the symlink ends by ".conf".
