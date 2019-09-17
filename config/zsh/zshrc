@@ -29,6 +29,7 @@ alias sudo="sudo "
 alias php="sudo -u http -H php"
 alias open="xdg-open"
 alias hist="history 0"
+alias whatsapp="firefox https://web.whatsapp.com"
 
 films() { grep -i "$1" "$HOME/Videos_tmp/Balourd" }
 
