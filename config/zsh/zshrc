@@ -132,7 +132,7 @@ zstyle ':completion:*:kill:*'   force-list always
 zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
 
 CDPATH=.:~:~/git
-PATH=$PATH:~/.local/bin
+PATH=$PATH:~/.local/bin:~/.my_scripts_configs/scripts
 
 #I want my umask 0027 if I'm not root
 if [[ $(whoami) = root ]]; then

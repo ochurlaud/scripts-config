@@ -1,7 +1,7 @@
 #! /bin/sh
 
 function usage() {
-    echo "Usage: ./decrypt_dir.sh INPUT OUTPUT"
+    echo "Usage: decrypt_dir.sh INPUT OUTPUT"
     exit $1
 }
 
