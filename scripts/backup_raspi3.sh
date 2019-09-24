@@ -8,13 +8,13 @@ BACKUPSRC=( \
     "/home/olivier/Images" \
     "/home/olivier/Documents" \
     )
-echo "-------------$(date +'%Y/%m/%d %H:%M:%S')------------- >> $LOGFILE"
+echo "-------------$(date +'%Y/%m/%d %H:%M:%S')-------------" >> $LOGFILE
 
 for d in $BACKUPSRC; do
 #  echo "rsync -av --delete --log-file=$LOGFILE \"$d\" \"$BACKUPDIR\" &> /dev/null"
-  rsync -av --delete --log-file=$LOGFILE "$d" $BACKUPHOST:"$BACKUPDIR" &> /dev/null
+  rsync -az --delete --log-file=$LOGFILE "$d" $BACKUPHOST:"$BACKUPDIR" &> /dev/null
 done
 
-cat $LOGFILE | grep -ve "building" -ve "sent" -ve "total size" >> $LOGFILE.tmp
+cat $LOGFILE | grep -ve "building" -ve "sent" -ve "total size" -ve ".d...p.g..." >> $LOGFILE.tmp
 
 mv $LOGFILE.tmp $LOGFILE
