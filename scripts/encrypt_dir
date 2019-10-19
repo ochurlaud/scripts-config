@@ -1,7 +1,9 @@
 #! /bin/sh
 
+PROGRAM_NAME=$(basename $0)
+
 function usage() {
-    echo "Usage: encrypt_dir.sh INPUT OUTPUT"
+    echo "Usage: $PROGRAM_NAME INPUT OUTPUT"
     exit $1
 }
 
@@ -14,10 +16,9 @@ if [[ "$#" -eq 2 ]] ; then
     OUTPUT=$2
 
     cd $INPUT
-    tar -czf - * | openssl enc -e -aes-256-cbc -pbkdf2 -out $OUTPUT
+    gpgtar --symmetric --encrypt -o $OUTPUT *
     cd -
     exit $?
 fi
 
 usage 1
-
