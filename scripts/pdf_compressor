@@ -11,9 +11,22 @@ if [ "$#" -eq 1 ] && [ "$1" = "--help" ] ; then
     usage 0
 fi
 
+if [ "$#" -eq 1 ] && [ -f "$1" ] ; then
+    INPUT="$1"
+    OUTPUT="${INPUT%.*}_compressed.${INPUT##*.}"
+    echo "[INFO] Will be saved as $OUTPUT"
+    $0 $INPUT $OUTPUT
+    exit $?
+fi
+
 if [ "$#" -eq 2 ] ; then
     INPUT="$1"
     OUTPUT="$2"
+
+    if [ "$INPUT" = "$OUTPUT" ]; then
+        echo "[ERROR] INPUT and OUTPUT should be different"
+        exit 1
+    fi
     gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/ebook -dNOPAUSE -dQUIET -dBATCH -sOutputFile="$OUTPUT" "$INPUT"
     exit $?
 fi
