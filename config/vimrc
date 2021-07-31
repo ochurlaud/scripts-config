@@ -39,4 +39,5 @@ set tabstop=8
 "let g:jedi#popup_on_dot = 0
 autocmd FileType python setlocal completeopt-=preview
 
-set mouse-=a
+set mouse=
+set ttymouse=
