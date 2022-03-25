@@ -28,9 +28,6 @@ alias vi="vim"
 alias sudo="sudo "
 alias open="xdg-open"
 alias hist="history 0"
-alias whatsapp="firefox https://web.whatsapp.com"
-
-films() { grep -i "$1" "$HOME/Videos_tmp/Balourd" }
 
 ##############################################################
 #key binding stuff to get the right keys to work
@@ -129,14 +126,6 @@ zstyle ':completion:*' squeeze-slashes true
 zstyle ':completion:*:*:kill:*' menu yes select
 zstyle ':completion:*:kill:*'   force-list always
 zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
-
-#I want my umask 0027 if I'm not root
-if [[ $(whoami) = root ]]; then
-    umask 0022
-else
-    umask 0027
-fi
-
 
 #setup ~/.dir_colors if one doesn\'t exist
 if [ ! -s ~/.dir_colors ]; then
