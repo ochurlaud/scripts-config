@@ -282,25 +282,44 @@ if [[ -n $SSH_CONNECTION ]]; then
         SSH_HOST=$SSH_IP
     fi    
     SSH_PROMPT="${RED_DIAMOND} %F{yellow}SSH from: %f%B%F{green}$SSH_HOST%f%b ${RED_DIAMOND}"
-    #SSH_PROMPT="${YELLOW_DIAMOND}${PR_BRIGHT_RED}SSH${PR_RESET}${YELLOW_DIAMOND}"
-    #SSH_VAR="${YELLOW_DIAMOND}${PR_BRIGHT_RED}SSH${PR_RESET}${YELLOW_DIAMOND}"
 
 fi
 
-# %F (%f) start (stop) color 
-# %B (%b) start (stop) boldness
-# %n username
-# %m short hostname
+gen_color_string() {
+    echo "$(echo $1|cksum|awk '{print $1%256}')"
+}
 
-if [[ $(whoami) = root ]]; then
-    PROMPT_LINE="%B%F{red}%n@%M%f%b"
-else
-    #PROMPT_LINE="%F{green}%n%f@%B%F{green}%m%b%f"
-    prompt_hashcolor=$(hostname|cksum|awk '{print $1%256}')
-    PROMPT_LINE="%F{green}%n%f@%B%F{${prompt_hashcolor}}%m%b%f"
-fi
+# To force another color, reimplement this function in your .zshrc
+# for instance:
+#    gen_host_color() {
+#        echo "123"
+#    }
+#    gen_host_color() {
+#        echo "green"
+#    }
+gen_host_color() {
+    echo $(gen_color_string $(hostname))
+}
 
-precmd(){
+# To force another color, reimplement this function in your .zshrc
+# same as gen_host_color
+gen_user_color() {
+    echo $(gen_color_string $USER)
+}
+
+precmd() {
+
+    # %F (%f) start (stop) color 
+    # %B (%b) start (stop) boldness
+    # %n username
+    # %m short hostname
+    if [[ $(whoami) = root ]]; then
+        PROMPT_LINE="%B%F{red}%n@%M%f%b"
+    else
+        host_color=$(gen_host_color)
+        user_color=$(gen_user_color)
+        PROMPT_LINE="%F{$user_color}%n%f@%B%F{${host_color}}%m%b%f"
+    fi
 
     local exit_status=$?
     if [ "${exit_status}" -ne 0 ] ; then
