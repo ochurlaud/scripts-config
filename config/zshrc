@@ -308,6 +308,8 @@ gen_user_color() {
 }
 
 precmd() {
+    # Get the exit status before running any other command
+    local exit_status=$?
 
     # %F (%f) start (stop) color 
     # %B (%b) start (stop) boldness
@@ -321,7 +323,6 @@ precmd() {
         PROMPT_LINE="%F{$user_color}%n%f@%B%F{${host_color}}%m%b%f"
     fi
 
-    local exit_status=$?
     if [ "${exit_status}" -ne 0 ] ; then
         EXIT_STATUS_PR=" %F{red}%B◆%b Err: ${exit_status}%f%(1j.\n.)"
     else
