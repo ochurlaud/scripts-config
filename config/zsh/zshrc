@@ -130,9 +130,6 @@ zstyle ':completion:*:*:kill:*' menu yes select
 zstyle ':completion:*:kill:*'   force-list always
 zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
 
-CDPATH=.:~:~/git
-PATH=$PATH:~/.local/bin:~/.my_scripts_configs/scripts
-
 #I want my umask 0027 if I'm not root
 if [[ $(whoami) = root ]]; then
     umask 0022
@@ -309,13 +306,19 @@ fi
 if [[ $(whoami) = root ]]; then
     PROMPT_LINE="%B%F{red}%n@%M%f%b"
 else
-    PROMPT_LINE="%F{green}%n%f@%B%F{green}%m%b%f"
+    #PROMPT_LINE="%F{green}%n%f@%B%F{green}%m%b%f"
+    prompt_hashcolor=$(hostname|cksum|awk '{print $1%256}')
+    PROMPT_LINE="%F{green}%n%f@%B%F{${prompt_hashcolor}}%m%b%f"
 fi
 
 precmd(){
 
     local exit_status=$?
-
+    if [ "${exit_status}" -ne 0 ] ; then
+        EXIT_STATUS_PR=" %F{red}%B◆%b Err: ${exit_status}%f%(1j.\n.)"
+    else
+        EXIT_STATUS_PR=""
+    fi
     vcs_info 'prompt'
 
     # now lets change the color of the path if its not writable
@@ -325,21 +328,19 @@ precmd(){
         PR_PWDCOLOR="${PR_BRIGHT_RED}"
     fi  
 
-
-LINE1_PROMPT="\
-${EXIT_STATUS}\
-%(1j. %B%F{green}◆%f%b %B%F{yellow}Jobs: %j%f%b.)"
- 
-local TERMWIDTH
-(( TERMWIDTH = ${COLUMNS} - 2 ))
-LINE1=${(e%)LINE1_PROMPT} SSH_P=${(e%)SSH_PROMPT}
-LINE1_LENGTH=${#${LINE1//\[[^m]##m/}}
-SSH_P_LENGTH=${#${SSH_P//\[[^m]##m/}}
-FILL_SPACES=${(l:TERMWIDTH - (LINE1_LENGTH + SSH_P_LENGTH):: :)}
-
-if [ \( $LINE1_LENGTH -ne 0 \) -o  \( $SSH_P_LENGTH -ne 0 \) ]; then
-    print -- "$LINE1 $FILL_SPACES $SSH_P"
-fi;
+    LINE1_PROMPT="${EXIT_STATUS_PR}"
+    LINE1_PROMPT="${LINE1_PROMPT}%(1j. %B%F{green}◆%f%b %B%F{yellow}Jobs: %j%f%b.)"
+     
+    local TERMWIDTH
+    (( TERMWIDTH = ${COLUMNS} - 2 ))
+    LINE1=${(e%)LINE1_PROMPT} SSH_P=${(e%)SSH_PROMPT}
+    LINE1_LENGTH=${#${LINE1//\[[^m]##m/}}
+    SSH_P_LENGTH=${#${SSH_P//\[[^m]##m/}}
+    FILL_SPACES=${(l:TERMWIDTH - (LINE1_LENGTH + SSH_P_LENGTH):: :)}
+    
+    if [ \( $LINE1_LENGTH -ne 0 \) -o  \( $SSH_P_LENGTH -ne 0 \) ]; then
+        print -- "$LINE1 $FILL_SPACES $SSH_P"
+    fi;
 }
 
 if [[ $(whoami) = root ]]; then
