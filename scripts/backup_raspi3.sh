@@ -4,7 +4,7 @@ set -e
 
 LOGFILE=/home/olivier/.backup-rpi3.log
 BACKUP_HOST="olivier@raspi3"
-BACKUP_ROOTPATH="/mnt/auto/MyBook/backups/OLINUX"
+BACKUP_ROOTPATH="/mnt/auto/MyBook/backups/${HOST}"
 BACKUP_DIR_PREFIX="backup"
 BACKUP_FULLPATH_PREFIX="${BACKUP_ROOTPATH}/${BACKUP_DIR_PREFIX}"
 CURRENT_BACKUP_DIR="${BACKUP_DIR_PREFIX}.0"
