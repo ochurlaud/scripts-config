@@ -31,11 +31,11 @@ if [ "$#" -ne 1 ] ; then
     exit 1
 fi
 
-if [ "$1" == "--check" ] ; then
+if [ "$1" = "--check" ] ; then
     alias _command=file_check
-elif [ "$1" == "--deploy" ] ; then
+elif [ "$1" = "--deploy" ] ; then
     alias _command=file_install
-elif [ "$1" == "--help" ] ; then
+elif "$1" = "--help" ; then
     help
     exit 0
 else
