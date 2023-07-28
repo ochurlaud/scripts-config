@@ -2,8 +2,8 @@
 
 set -e
 
-LOGFILE=/home/olivier/.backup-rpi4.log
-BACKUP_HOST="olivier@raspi4"
+LOGFILE=/home/olivier/.backup-raspberrypi.log
+BACKUP_HOST="olivier@raspberrypi"
 BACKUP_ROOTPATH="/mnt/auto/MyBook/backups/${HOST}"
 BACKUP_DIR_PREFIX="backup"
 BACKUP_FULLPATH_PREFIX="${BACKUP_ROOTPATH}/${BACKUP_DIR_PREFIX}"

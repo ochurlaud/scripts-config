@@ -29,10 +29,10 @@ for d in $BACKUP_SRC; do
 #  rsync -az --delete --link-dest="${PREVIOUS_BACKUP_FULLPATH}" --log-file=$LOGFILE "$d" ${BACKUP_HOST}:"${CURRENT_BACKUP_FULLPATH}" &> /dev/null
 #  Comme on est sur du ntfs, on ne peut pas conserver les droits (-p), les groupes (-p) ..., sinon on utiliserait -a
     echo "## SYNC $d ##" >> $LOGFILE
-    rsync -vrtlz --delete --link-dest="${CURRENT_BACKUP_FULLPATH}" --log-file=$LOGFILE "$d" ${BACKUP_HOST}:"${CURRENT_BACKUP_FULLPATH_TMP}" &> /dev/null
+    rsync -vrtlz --delete --link-dest="${CURRENT_BACKUP_FULLPATH}" --log-file=$LOGFILE "$d" ${BACKUP_HOST}:"${CURRENT_BACKUP_FULLPATH_TMP}"
 done
 
-echo "## START ROTATION ##" >> $LOGFILE
+echo "## START ROTATION ##" | tee -a $LOGFILE
 #echo "ssh $BACKUPHOST \"rm -rf ${BACKUPPATH_PATTERN}.${MAX_ROTATION} ; \
 
 ssh ${BACKUP_HOST} "[[ -d ${BACKUP_FULLPATH_PREFIX}.${MAX_ROTATION} ]] && rm -rf ${BACKUP_FULLPATH_PREFIX}.${MAX_ROTATION} ; \
@@ -44,10 +44,10 @@ ssh ${BACKUP_HOST} "[[ -d ${BACKUP_FULLPATH_PREFIX}.${MAX_ROTATION} ]] && rm -rf
 SSH_RETURN=$?
 
 if [ "${SSH_RETURN}" -ne 0 ] ; then
-    echo "## [ERROR] ROTATION FAILED ##" >> $LOGFILE
+    echo "## [ERROR] ROTATION FAILED ##" | tee -a $LOGFILE
     exit 1
 else
-    echo "## ROTATION DONE ##" >> $LOGFILE
+    echo "## ROTATION DONE ##" | tee -a $LOGFILE
 fi
 
 cat $LOGFILE | grep -ve "building" -ve "sent" -ve "total size" -ve ".d...p.g..." >> $LOGFILE.tmp
